@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script>
+//call this function from the browser console to get your number
+//for compiling enter  $  cargo +nightly build --target wasm32-unknown-unknown --release
+//to make wasm more compact$ wasm-gc target/wasm32-unknown-unknown/release/hello_cargo.wasm -o hello_world.gc.wasm
+// to run the http server $npx http-serve -C-1  it should run on localhost:8080
+//then run wasm.instance.exports.fib(10) or whatever number you want to fin 
+//then run readString(wasm,[the number fib prints out]), it should return 55 if you put in 10
+    function readString(wasm, ptr) {
+        a = new Uint8Array(wasm.instance.exports.memory.buffer)
+        let s = ''
+        do { s += String.fromCharCode(a[ptr++]) } while (a[ptr])
+        return s
+    }
+
+      WebAssembly.instantiateStreaming(fetch('hello_world.gc.wasm'))
+        .then(wasm_module => {
+            alert(`2 + 1 = ${wasm_module.instance.exports.add(2,3)}`);
+            window.wasm = wasm_module;
+        });
+
+    </script>
+  </head>
+  <body></body>
+</html>
